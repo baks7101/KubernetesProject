@@ -33,10 +33,13 @@ jobs:
         run: |
           docker build -t k8s:latest .
           docker tag k8s:latest baks7101/k8s:latest
-          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
           docker push baks7101/k8s:latest
         env:
           DOCKER_CLI_ACI: 1
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
 
       - name: Image scan
         run: trivy image 7101/k8s:latest > trivyimage.txt
