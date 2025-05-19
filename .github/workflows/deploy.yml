@@ -29,14 +29,13 @@ jobs:
       - name: Trivy file scan
         run: trivy fs . > trivyfs.txt
 
-      - name: Docker Build 
+      - name: Docker Build and Push
         run: |
           docker build -t k8s:latest .
           docker tag k8s:latest baks7101/k8s:latest
-          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           docker push baks7101/k8s:latest
-        env:
-          DOCKER_CLI_ACI: 1
+
 
 
 
