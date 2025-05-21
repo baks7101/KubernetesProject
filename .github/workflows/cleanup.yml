@@ -13,10 +13,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Stop container
+      - name: Stop and remove container
         run: |
-          docker stop game
-          docker rm game
+          docker ps -q --filter "name=game" | grep -q . && docker stop game || echo "Container 'game' not running."
+          docker ps -aq --filter "name=game" | grep -q . && docker rm game || echo "Container 'game' not found."
       - name: Update kubeconfig
         run: aws eks --region eu-west-2 update-kubeconfig --name EKS_CLOUD
       - name: Deploy to kubernetes
